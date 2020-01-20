@@ -1,7 +1,7 @@
-// test link
+// confirm linked
 console.log("js linked")
 
-// // test location of data
+// // json data paths for reference
 // d3.json("data/samples.json").then(function(data) {
 //     let dataset = data.samples; 
 //     let values = dataset.sample_values; 
@@ -19,74 +19,96 @@ console.log("js linked")
 //     console.log(otu_names);
 // });
 
-// Initializes the page with a default plot
+// Initializes the page with a default plot ***** still needed
 function init() {
     d3.json("data/samples.json").then(function(data) {
     data.names.forEach(id_no => {
-        d3.select("#selDataset").append("option").text(id_no).property("value");
+        d3.select("#selDataset").append("option").text(id_no).property("value"); // or node version
         })
     })
 };
-    // data = [{
-    //   x: [1, 2, 3, 4, 5],
-    //   y: [1, 2, 4, 8, 16] }];
-    // var CHART = d3.selectAll("#plot").node();
-    // Plotly.newPlot(CHART, data);
 
-// Add event listener for submit button - turnon when fillPage ready
-// d3.select("#selDataset").on("click", fillPage);
+// Event listener for dropdown seletion - need generic fill page as well
+d3.select("#selDataset").on("change", fillPage); 
+
+function fillPage() {
+    console.log("fillPage!");
+    // Prevent the page from refreshing //need????
+    // d3.event.preventDefault(); //need????
+    // Select the input value from the form
+    let subject = d3.select("#selDataset").node().value; // or property version
+    console.log(subject);
+    // clear the input value //need????
+    // d3.select("#stockInput").node().value = ""; //need????
+    // Build the plot with the new subject
+    buildPlots(subject);
+}
+
+function buildPlots(subject) { //how incorporate subject? 
+    console.log("buildPlots!")
+    console.log(subject)
+
+    // bar chart
+    d3.json("data/samples.json").then(function(data) {
+    let dataset = data.samples; 
+    let sample_values = dataset.map(row=> row.sample_values)
+    let otu_ids = dataset.map(row=>row.otu_ids);
+
+    let trace1 = {
+        x: sample_values,
+        y: otu_ids,
+        // text: data.map(row => row.samples[4]),
+        name: "Test",
+        type: "bar",
+        orientation: "h"
+    };
+
+    let chartData = [trace1];
+
+    let layout = {
+            title: "Test search results",
+            // margin: {
+            //     l: 100,
+            //     r: 100,
+            //     t: 100,
+            //     b: 100
+            // }
+            // xaxis:
+            // yaxis:
+            };    
+
+    Plotly.newPlot("bar", chartData, layout); //or restyle?
+
+        })
+
+    
+};
+    
+
+    //   let chartData = [trace1];
+
+    //   let layout = {
+    //     title: "Test search results",
+    //     margin: {
+    //       l: 100,
+    //       r: 100,
+    //       t: 100,
+    //       b: 100
+    //     }
+    //     // xaxis:
+    //     // yaxis:
+    //   };    
+    //   Plotly.newPlot("bar", chartData, layout); //or restyle?
+
 
 init(); // needs to be at end?
 
 
-// // Submit Button handler
-// function handleSubmit() {
-//     // Prevent the page from refreshing
-//     // d3.event.preventDefault(); //need????
-//     // Select the input value from the form
-//     let subject = d3.select("#selDataset").node().value;
-//     console.log(subject);
-//     // clear the input value
-//     // d3.select("#stockInput").node().value = "";
-//     // Build the plot with the new subject
-//     buildPlots(subject);
-// }
+
 
 // // Pull metadata
 
-// function buildPlots(subject) {
-//     d3.json("data/samples.json").then(function(data) {
-//         let dataset = data.samples; 
-//         let names = data.names;
-//         let demos = data.metadata; // map with this? var dates = data.dataset.data.map(row => row[0]);
-//         let sample_values = dataset.map(row=> row.sample_values);
-//         let otu_ids = dataset.map(row=>row.otu_ids);
-//         let otu_names = dataset.map(row=>row.otu_labels); 
 
-//         let trace1 = {
-//         x: sample_values
-//         y: otu_ids
-//         // text: data.map(row => row.samples[4]),
-//         name: "Test",
-//         type: "bar",
-//         orientation: "h"
-//       };
-
-//       let chartData = [trace1];
-
-//       let layout = {
-//         title: "Test search results",
-//         margin: {
-//           l: 100,
-//           r: 100,
-//           t: 100,
-//           b: 100
-//         }
-//         // xaxis:
-//         // yaxis:
-//       };    
-//       Plotly.newPlot("bar", chartData, layout); //or restyle?
-//     });
 
 //     }
 
