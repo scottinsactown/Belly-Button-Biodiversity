@@ -28,77 +28,99 @@ function init() {
     })
 };
 
-// Event listener for dropdown seletion - need generic fill page as well
-d3.select("#selDataset").on("change", fillPage); 
+// Event listener for dropdown seletion - need init and update seperate, this should trigger update
+d3.select("#selDataset").on("change", updatePage); // seperate out functions for init vs update
 
-function fillPage() {
-    console.log("fillPage!");
-    // Prevent the page from refreshing //need????
-    // d3.event.preventDefault(); //need????
-    // Select the input value from the form
+function updatePage() {
+    console.log("updatePage!");
+
     let subject = d3.select("#selDataset").node().value; // or property version
     console.log(subject);
-    // clear the input value //need????
-    // d3.select("#stockInput").node().value = ""; //need????
-    // Build the plot with the new subject
-    buildPlots(subject);
-}
 
-function buildPlots(subject) { //how incorporate subject? 
-    console.log("buildPlots!")
-    console.log(subject)
+// call fillCharts function seperately?
 
     // bar chart
     d3.json("data/samples.json").then(function(data) {
-    let dataset = data.samples; 
-    let sample_values = dataset.map(row=> row.sample_values)
-    let otu_ids = dataset.map(row=>row.otu_ids);
+        
+        filteredData = data.samples.filter(function(datapoint) {
+            return datapoint.id === subject;
+        });
 
-    let trace1 = {
-        x: sample_values,
-        y: otu_ids,
-        // text: data.map(row => row.samples[4]),
-        name: "Test",
-        type: "bar",
-        orientation: "h"
-    };
+        let sample_values = filteredData[0].sample_values.slice(0,10).reverse();
+        let otu_ids = filteredData[0].otu_ids.map(id => ("OTU " + id)).slice(0,10).reverse();
+        let otu_labels = filteredData[0].otu_labels.slice(0,10).reverse();
 
-    let chartData = [trace1];
-
-    let layout = {
-            title: "Test search results",
-            // margin: {
-            //     l: 100,
-            //     r: 100,
-            //     t: 100,
-            //     b: 100
-            // }
-            // xaxis:
-            // yaxis:
-            };    
-
-    Plotly.newPlot("bar", chartData, layout); //or restyle?
-
-        })
-
+        let traceBar = {
+            x: sample_values,
+            y: otu_ids,
+            text: otu_labels,
+            name: "Test",
+            type: "bar",
+            orientation: "h"
+        };
     
-};
+        let barData = [traceBar];
     
+        let layout = {
+                title: "Test search results",
+                margin: {
+                    l: 100,
+                    r: 100,
+                    t: 100,
+                    b: 100
+                },
+                xaxis: {label: "sample_values"},
+                yaxis: {label: "otu_ids"}
+                };    
+    
+        Plotly.newPlot("bar", barData, layout); //or restyle?
+        // fix tooltips
+            })
 
-    //   let chartData = [trace1];
+    // bubble chart
+    d3.json("data/samples.json").then(function(data) {
+        filteredData = data.samples.filter(function(datapoint) {
+            return datapoint.id === subject;
+        });
 
-    //   let layout = {
-    //     title: "Test search results",
-    //     margin: {
-    //       l: 100,
-    //       r: 100,
-    //       t: 100,
-    //       b: 100
-    //     }
-    //     // xaxis:
-    //     // yaxis:
-    //   };    
-    //   Plotly.newPlot("bar", chartData, layout); //or restyle?
+            let sample_values = filteredData[0].sample_values
+            let otu_ids = filteredData[0].otu_ids
+            let otu_labels = filteredData[0].otu_labels
+
+            let traceBubble = {
+                x: otu_ids,
+                y: sample_values,
+                text: otu_labels,
+                mode: 'markers',
+                // opacity
+                marker: {
+                    size: sample_values,
+                    color: otu_ids,
+                }
+            }
+
+            let bubbleData = [traceBubble];
+
+            let layout = {
+                title: "Test search results",
+                margin: {
+                    l: 100,
+                    r: 100,
+                    t: 100,
+                    b: 100
+                },
+                // xaxis: {label: "sample_values"},
+                // yaxis: {label: "otu_ids"}
+                };   
+
+            Plotly.newPlot("bubble", bubbleData,layout);
+
+        });
+
+    // data table
+    
+}
+
 
 
 init(); // needs to be at end?
