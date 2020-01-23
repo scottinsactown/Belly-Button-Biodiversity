@@ -63,12 +63,12 @@ function updatePage() {
     
         let layout = {
                 title: "Test search results",
-                margin: {
-                    l: 100,
-                    r: 100,
-                    t: 100,
-                    b: 100
-                },
+                // margin: {
+                //     l: 100,
+                //     r: 100,
+                //     t: 100,
+                //     b: 100
+                // },
                 xaxis: {label: "sample_values"},
                 yaxis: {label: "otu_ids"}
                 };    
@@ -82,7 +82,6 @@ function updatePage() {
         filteredData = data.samples.filter(function(datapoint) {
             return datapoint.id === subject;
         });
-
             let sample_values = filteredData[0].sample_values
             let otu_ids = filteredData[0].otu_ids
             let otu_labels = filteredData[0].otu_labels
@@ -104,13 +103,13 @@ function updatePage() {
             let layout = {
                 title: "Test search results",
                 margin: {
-                    l: 100,
-                    r: 100,
-                    t: 100,
-                    b: 100
+                    l: 50,
+                    r: 50,
+                    t: 50,
+                    b: 50
                 },
-                // xaxis: {label: "sample_values"},
-                // yaxis: {label: "otu_ids"}
+                xaxis: {label: "OTU IDs"},
+                yaxis: {label: "Sample values"}
                 };   
 
             Plotly.newPlot("bubble", bubbleData,layout);
@@ -118,37 +117,22 @@ function updatePage() {
         });
 
     // data table
-    
-}
+    d3.json("data/samples.json").then(function(data) {
+        filteredData = data.metadata.filter(function(datapoint) {
+            return datapoint.id.toString() === subject;
+        })[0];
+        console.log(filteredData)
+            let table = d3.select("#sample-metadata");
+            table.html("");
+            Object.entries(filteredData).forEach(function(key) {
+                table.append('tr').text(key[0] + ": " + key[1] + "\n");
+            })
+        ;
+        });
 
+}
+    
 
 
 init(); // needs to be at end?
 
-
-
-
-// // Pull metadata
-
-
-
-//     }
-
-// 1. Use the D3 library to read in `samples.json`. There is a samples section for each x153
-// 2. Create a horizontal bar chart with a dropdown menu to display the top 10 OTUs found in that individual.
-// SORT/SLICE
-// * Use samples:`sample_values` as the values for the bar chart.
-// * Use samples:`otu_ids` as the labels for the bar chart.
-// * Use samples"`otu_labels` as the hovertext for the chart.
-//   ![bar Chart](Images/hw01.png)
-// 3. Create a bubble chart that displays each sample.
-// * Use `otu_ids` for the x values.
-// * Use `sample_values` for the y values.
-// * Use `sample_values` for the marker size.
-// * Use `otu_ids` for the marker colors.
-// * Use `otu_labels` for the text values.
-// ![Bubble Chart](Images/bubble_chart.png)
-// 4. Display the sample metadata, i.e., an individual's demographic information.
-// 5. Display each key-value pair from the metadata JSON object somewhere on the page.
-// ![hw](Images/hw03.png)
-// 6. Update all of the plots any time that a new sample is selected.
