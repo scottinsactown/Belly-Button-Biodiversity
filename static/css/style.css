@@ -1,0 +1,33 @@
+.infolayer [class^='y'][class$='title'] {
+    transform: rotate(0deg); translate: (-10px,-10px);
+    position: relative;
+}
+
+body {
+    background-color: cornsilk;
+}
+
+.footer {
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: darkslategrey;
+    color: blanchedalmond;
+    text-align: center;
+  }
+
+.jumbotron {
+    background-color: darkslategrey; 
+    color: blanchedalmond;
+    /* height: 200px; */
+    padding: 10px;
+  }
+
+#main-title {
+    font-size:40px;
+}
+
+.panel-heading {
+    background-color: darkslategrey;
+}
