@@ -1,47 +1,29 @@
-// confirm linked
-console.log("js linked")
+// *** Belly Botton Biodiversity 
 
-// // json data paths for reference
-// d3.json("data/samples.json").then(function(data) {
-//     let dataset = data.samples; 
-//     let values = dataset.sample_values; 
-//     let names = data.names;
-//     let demos = data.metadata;
-//     let sample_values = dataset.map(row=> row.sample_values);
-//     let otu_ids = dataset.map(row=>row.otu_ids);
-//     let otu_names = dataset.map(row=>row.otu_labels); 
-//     console.log(dataset);
-//     console.log(values);
-//     console.log(names)
-//     console.log(demos)
-//     console.log(sample_values);
-//     console.log(otu_ids);
-//     console.log(otu_names);
-// });
-
-// Initializes the page with a default plot ***** still needed
+// Initializes the page - fills dropdown with subjects IDs and displays default subject
 function init() {
     d3.json("data/samples.json").then(function(data) {
+    
+    // skips 940 because as default already in html
     data.names.forEach(id_no => {
+        if (id_no !== "940") {
         d3.select("#selDataset").append("option").text(id_no).property("value"); // or node version
-        })
+        }})
     })
+    updatePage()
 };
 
-// Event listener for dropdown seletion - need init and update seperate, this should trigger update
-d3.select("#selDataset").on("change", updatePage); // seperate out functions for init vs update
+// Event listener for dropdown seletion 
+d3.select("#selDataset").on("click", updatePage); 
 
+// Update data based on dropdown selection
 function updatePage() {
-    console.log("updatePage!");
-
+    console.log("updating page");
     let subject = d3.select("#selDataset").node().value; // or property version
-    console.log(subject);
-
-// call fillCharts function seperately?
-
+ 
     // bar chart
     d3.json("data/samples.json").then(function(data) {
-        
+     
         filteredData = data.samples.filter(function(datapoint) {
             return datapoint.id === subject;
         });
@@ -132,7 +114,5 @@ function updatePage() {
 
 }
     
-
-
 init(); // needs to be at end?
 
