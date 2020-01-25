@@ -1,10 +1,7 @@
+
 .infolayer [class^='y'][class$='title'] {
     transform: rotate(0deg); translate: (-10px,-10px);
     position: relative;
-}
-
-body {
-    background-color: cornsilk;
 }
 
 .footer {
@@ -12,15 +9,14 @@ body {
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: darkslategrey;
-    color: blanchedalmond;
+    background-color: rgb(0,112,65);
+    color:white;
     text-align: center;
   }
 
 .jumbotron {
-    background-color: darkslategrey; 
-    color: blanchedalmond;
-    /* height: 200px; */
+    background-color: rgb(0,112,65); 
+    color: white;
     padding: 10px;
   }
 
@@ -28,6 +24,50 @@ body {
     font-size:40px;
 }
 
-.panel-heading {
-    background-color: darkslategrey;
+.card {
+    margin-left: 10px;
+}
+
+.card-body {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+#href1 {
+    text-decoration: underline;
+}
+
+div {
+    box-sizing: border-box;
+}
+
+.well {
+    background-color:#337ab7;
+    color: white;
+    padding-top: 5px;
+    border-color:#337ab7;
+}
+
+.panel {
+    border-color:#337ab7;
+
+}
+
+#selDataset {
+    color: black;
+}
+
+#bar {
+    border-color: #337ab7;
+}
+
+#bubble {
+    width: 100%;
+}
+
+#gauge {
+    /* width: 374.178px; */
+    height: 250px;
 }

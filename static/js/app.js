@@ -7,7 +7,7 @@ function init() {
     // skips 940 because as default already in html
     data.names.forEach(id_no => {
         if (id_no !== "940") {
-        d3.select("#selDataset").append("option").text(id_no).property("value"); // or node version
+        d3.select("#selDataset").append("option").text(id_no).property("value"); 
         }});
     })
     updatePage();
@@ -16,43 +16,41 @@ function init() {
 // Event listener for dropdown seletion 
 d3.select("#selDataset").on("click", updatePage); 
 
-// Update data based on dropdown selection
+// Update data and all charts based on dropdown selection
 function updatePage() {
     console.log("updating page");
-    let subject = d3.select("#selDataset").node().value; // or property version
+    let subject = d3.select("#selDataset").node().value; 
  
     // bar chart
     d3.json("data/samples.json").then(function(data) {
      
         filteredData = data.samples.filter(function(datapoint) {
             return datapoint.id === subject;
-        });
+            });
 
         let sample_values = filteredData[0].sample_values.slice(0,10).reverse();
         let otu_ids = filteredData[0].otu_ids.map(id => ("OTU " + id)).slice(0,10).reverse();
         let otu_labels = filteredData[0].otu_labels.map(item => item.replace(/;/g,"<br>")).slice(0,10).reverse();
 
-        let traceBar = {
+        let traceBar = [{
             x: sample_values,
             y: otu_ids,
             text: otu_labels,
             type: "bar",
             orientation: "h"
-        };
-        let barData = [traceBar];
+            }];
 
         let layout = {
             title: `Top 10 OTUs Found<br>in Subject ${subject}`,
                 margin: {
                     l: 100,
                 },
-            xaxis: {title: "Number Found"},
+            xaxis: {title: "Quantity"},
             // yaxis: {title: "otu_ids"}
             };    
     
-        Plotly.newPlot("bar", barData, layout); //or restyle?
-        // fix tooltips
-            })
+        Plotly.newPlot("bar", traceBar, layout); 
+            });
 
     // bubble chart
     d3.json("data/samples.json").then(function(data) {
@@ -63,7 +61,7 @@ function updatePage() {
             let otu_ids = filteredData[0].otu_ids;
             let otu_labels = filteredData[0].otu_labels.map(item => item.replace(/;/g,"<br>"))
 
-            let traceBubble = {
+            let traceBubble = [{
                 x: otu_ids,
                 y: sample_values,
                 text: otu_labels,
@@ -72,10 +70,8 @@ function updatePage() {
                 marker: {
                     size: sample_values,
                     color: otu_ids,
-                },
-            };
-
-            let bubbleData = [traceBubble];
+                    },
+                }];
 
             let layout = {
                 title: `<br>All OTUs Found in Subject ${subject}`,
@@ -87,14 +83,13 @@ function updatePage() {
                 },
                 xaxis: {title: "OTU IDs"},
                 yaxis: {title: {
-                    text: "Number<br>Found",
-                    standoff: 20},
+                    text: "Quantity",
+                    standoff: 30},
                     automargin: true
                 }
             };   
 
-            Plotly.newPlot("bubble", bubbleData,layout);
-
+            Plotly.newPlot("bubble", traceBubble,layout, {responsive: true});
         });
 
     // data table
@@ -109,7 +104,34 @@ function updatePage() {
                 table.append('tr').text((key[0]).toUpperCase() + ": " + key[1] + "\n");
             });
         });
-};
     
+    // gauge
+    d3.json("data/samples.json").then(function(data) {
+        filteredData = data.metadata.filter(function(datapoint) {
+            return datapoint.id.toString() === subject;
+        })[0];
+
+        let wfreq = filteredData.wfreq;
+
+        let traceGauge = [
+            {
+            domain: { x: [0, 1], y: [0, 1] },
+            value: wfreq,
+            title: { text: "Belly Button Washes per Week" },
+            type: "indicator",
+            mode: "gauge+number",
+            gauge: {
+                axis: { range: [null, 9] },
+                }
+            }];
+
+        let layout = { 
+            margin: { t: 0, b: 0 } 
+        };
+
+        Plotly.newPlot('gauge', traceGauge, layout);
+    })
+};
+
 init(); // needs to be at end?
 
