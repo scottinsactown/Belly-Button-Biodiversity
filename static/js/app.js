@@ -117,7 +117,9 @@ function updatePage() {
             {
             domain: { x: [0, 1], y: [0, 1] },
             value: wfreq,
-            title: { text: "Belly Button Washes per Week" },
+            title: { text: `Subject ${subject} <br> Belly Button Washes per Week`, 
+            font: {
+                size:16 }},
             type: "indicator",
             mode: "gauge+number",
             gauge: {
